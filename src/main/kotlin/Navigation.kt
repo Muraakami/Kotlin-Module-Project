@@ -1,5 +1,4 @@
 interface  Navigation {
-    fun viewMenu()
+    fun viewMenu() : List<Any>
     fun create()
-    fun count() : Int
 }

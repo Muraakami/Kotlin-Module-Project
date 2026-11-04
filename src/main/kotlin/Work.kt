@@ -1,7 +1,9 @@
+import kotlin.collections.listOf
+
 class Work: WorkWithInput(){
-    val title : List<String> = listOf("Архивов", "Заметок")
-    val menuItemZero : List<String> = listOf("архив", "заметку")
-    val menuItemEnd : List<String> = listOf("Выход", "Вернуться к архивам")
+    private val menuItems: Map<Int, List<String>> = mapOf(1 to listOf("Архивов", "Заметок"),
+        2 to listOf("архив", "заметку"),
+        3 to listOf("Выход", "Вернуться к архивам"))
 
     fun start(element: Library){
         var numPage = 0
@@ -11,22 +13,33 @@ class Work: WorkWithInput(){
         }
 
         while(true) {
-            println("Список ${title[numPage]}:\n0. Создать ${menuItemZero[numPage]}")
-            element.viewMenu()
-            val size = element.count() + 1
-            println("${size}. ${menuItemEnd[numPage]}")
+            println("Список ${menuItems[1]?.get(numPage)}:\n0. Создать ${menuItems[1]?.get(numPage)}")
+            val items = element.viewMenu()
+            var i = 1
+            for(item in items){
+                when(item){
+                    is Archive -> println("$i. ${item.titleArchive}")
+                    is Note -> println("$i. ${item.titleNote}")
+                }
+                i++
+            }
+            println("${items.size + 1}. ${menuItems[3]?.get(numPage)}")
 
             when (val numElement: Int = getNumber("Введите пункт из меню: ")) {
                 0 -> element.create()
-                in 1..element.count() -> {
-                    if(element is Archive){
-                        val archive: Archive = element
-                        println(archive.notes[numElement - 1].textNote)
-                    }else{
-                        start(element.library[numElement - 1])
+                in 1..items.size -> {
+                    when(items[numElement - 1]){
+                        is Archive -> {
+                            val archive = items[numElement - 1] as Archive
+                            start(archive)
+                        }
+                        is Note -> {
+                            val note = items[numElement - 1] as Note
+                            println(note.textNote)
+                        }
                     }
                 }
-                size -> break
+                i -> break
                 else -> println("Такого пункта меню не существует!")
             }
         }

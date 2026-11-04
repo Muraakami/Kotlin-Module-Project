@@ -7,7 +7,7 @@ abstract class WorkWithInput{
         var text: String
         while(true){
             println(textOutConsole)
-            text = scanner.nextLine()
+            text = scanner.nextLine().trim()
             when(text) {
                 "" -> println("Вы ввели пустую строку!")
                 else -> break
